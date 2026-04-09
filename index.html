@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Rafał Pecak — Data Analyst Portfolio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0e0f11;
+      --surface: #16181c;
+      --surface2: #1e2126;
+      --border: #2a2d34;
+      --accent: #4f8ef7;
+      --accent2: #7dd3c0;
+      --text: #e8eaed;
+      --muted: #8b909a;
+      --tag-bg: #1a2235;
+      --tag-color: #7aabff;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      line-height: 1.7;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* NOISE OVERLAY */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* GRID BACKGROUND */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 60px 60px;
+      opacity: 0.3;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      padding: 1.2rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(14,15,17,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--text);
+      letter-spacing: 0.05em;
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--text); }
+
+    /* HERO */
+    .hero {
+      padding: 10rem 0 6rem;
+      position: relative;
+    }
+
+    .hero-label {
+      font-size: 0.75rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .hero-label::before {
+      content: '';
+      width: 2rem;
+      height: 1px;
+      background: var(--accent);
+    }
+
+    h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2.8rem, 7vw, 5rem);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.5rem;
+    }
+
+    h1 span {
+      color: transparent;
+      -webkit-text-stroke: 1px var(--accent);
+    }
+
+    .hero-desc {
+      font-size: 1.05rem;
+      color: var(--muted);
+      max-width: 580px;
+      margin-bottom: 2.5rem;
+      line-height: 1.8;
+    }
+
+    .hero-cta {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.2s;
+      font-family: 'DM Sans', sans-serif;
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: #6b9ff8;
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      transform: translateY(-1px);
+    }
+
+    /* ACCENT GLOW */
+    .glow {
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(79,142,247,0.08) 0%, transparent 70%);
+      top: 5rem;
+      right: -10rem;
+      pointer-events: none;
+    }
+
+    /* STATS BAR */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 5rem;
+    }
+
+    .stat {
+      background: var(--surface);
+      padding: 1.5rem;
+      text-align: center;
+    }
+
+    .stat-value {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--accent);
+      display: block;
+    }
+
+    .stat-label {
+      font-size: 0.78rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-top: 0.25rem;
+    }
+
+    /* SECTION */
+    section { margin-bottom: 5rem; }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .section-label {
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent2);
+    }
+
+    .section-line {
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.6rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      letter-spacing: -0.01em;
+    }
+
+    /* PROJECT CARD */
+    .project-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      transition: border-color 0.3s, transform 0.3s;
+      margin-bottom: 1.5rem;
+    }
+
+    .project-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-3px);
+    }
+
+    .project-video {
+      width: 100%;
+      aspect-ratio: 16/9;
+      background: #000;
+    }
+
+    .project-video iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+
+    .project-body {
+      padding: 1.75rem;
+    }
+
+    .project-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.75rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .project-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+    }
+
+    .project-badge {
+      font-size: 0.7rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 20px;
+      background: rgba(79,142,247,0.1);
+      color: var(--accent);
+      border: 1px solid rgba(79,142,247,0.2);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .project-desc {
+      color: var(--muted);
+      font-size: 0.92rem;
+      margin-bottom: 1.25rem;
+      line-height: 1.75;
+    }
+
+    .project-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .tag {
+      font-size: 0.75rem;
+      padding: 0.25rem 0.7rem;
+      background: var(--tag-bg);
+      color: var(--tag-color);
+      border-radius: 4px;
+      font-weight: 400;
+    }
+
+    .project-highlights {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 1.25rem;
+    }
+
+    .highlight {
+      background: var(--surface2);
+      padding: 0.9rem;
+      text-align: center;
+    }
+
+    .highlight-value {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--accent2);
+      display: block;
+    }
+
+    .highlight-label {
+      font-size: 0.7rem;
+      color: var(--muted);
+      margin-top: 0.2rem;
+    }
+
+    /* COMING SOON CARD */
+    .project-card.coming-soon {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
+    .coming-soon-body {
+      padding: 3rem 1.75rem;
+      text-align: center;
+      color: var(--muted);
+    }
+
+    .coming-soon-icon {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      display: block;
+    }
+
+    /* SKILLS */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+
+    .skill-group {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem;
+    }
+
+    .skill-group-title {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--accent2);
+      margin-bottom: 0.75rem;
+    }
+
+    .skill-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+
+    /* ABOUT */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      align-items: start;
+    }
+
+    .about-text {
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.8;
+    }
+
+    .about-text p + p { margin-top: 1rem; }
+
+    .about-text strong { color: var(--text); font-weight: 500; }
+
+    .about-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.5rem;
+    }
+
+    .about-card-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      color: var(--text);
+    }
+
+    .timeline-item {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      align-items: flex-start;
+    }
+
+    .timeline-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      margin-top: 0.45rem;
+      flex-shrink: 0;
+    }
+
+    .timeline-text {
+      font-size: 0.82rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .timeline-text strong { color: var(--text); }
+
+    /* CONTACT */
+    .contact-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2.5rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .contact-box::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(79,142,247,0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .contact-box h2 { margin-bottom: 0.5rem; }
+
+    .contact-box p {
+      color: var(--muted);
+      margin-bottom: 1.5rem;
+      font-size: 0.95rem;
+    }
+
+    .contact-email {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 1.05rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .contact-email:hover { color: #6b9ff8; }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem 0;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.8rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero > * {
+      animation: fadeUp 0.6s ease both;
+    }
+
+    .hero-label { animation-delay: 0.1s; }
+    h1 { animation-delay: 0.2s; }
+    .hero-desc { animation-delay: 0.3s; }
+    .hero-cta { animation-delay: 0.4s; }
+
+    /* RESPONSIVE */
+    @media (max-width: 640px) {
+      .stats { grid-template-columns: 1fr; }
+      .skills-grid { grid-template-columns: 1fr; }
+      .about-grid { grid-template-columns: 1fr; }
+      .project-highlights { grid-template-columns: repeat(3, 1fr); }
+      .nav-links { display: none; }
+      h1 { font-size: 2.4rem; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="#" class="nav-logo">RP</a>
+  <ul class="nav-links">
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<div class="container">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="glow"></div>
+    <p class="hero-label">Data Analyst · Power BI Developer</p>
+    <h1>Rafał<br><span>Pecak</span></h1>
+    <p class="hero-desc">
+      Operations professional turning 4+ years of international logistics experience into data-driven insights. I build Power BI dashboards that transform complex operational data into clear business decisions.
+    </p>
+    <div class="hero-cta">
+      <a href="#projects" class="btn btn-primary">View Projects</a>
+      <a href="mailto:rpecak7@gmail.com" class="btn btn-secondary">Get in Touch</a>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <div class="stats">
+    <div class="stat">
+      <span class="stat-value">4+</span>
+      <span class="stat-label">Years in Operations</span>
+    </div>
+    <div class="stat">
+      <span class="stat-value">$20–25K</span>
+      <span class="stat-label">Annual Cost Savings Delivered</span>
+    </div>
+    <div class="stat">
+      <span class="stat-value">Power BI</span>
+      <span class="stat-label">Primary Tool</span>
+    </div>
+  </div>
+
+  <!-- PROJECTS -->
+  <section id="projects">
+    <div class="section-header">
+      <span class="section-label">Work</span>
+      <div class="section-line"></div>
+    </div>
+    <h2>Projects</h2>
+
+    <!-- PROJECT 1 -->
+    <div class="project-card">
+      <div class="project-video">
+        <iframe
+          src="https://www.youtube.com/embed/2Ow5XQATjOI"
+          title="EuroWindow Export Analysis"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen>
+        </iframe>
+      </div>
+      <div class="project-body">
+        <div class="project-meta">
+          <span class="project-title">EuroWindow Export Analysis</span>
+          <span class="project-badge">Power BI</span>
+        </div>
+        <p class="project-desc">
+          End-to-end sales and operations dashboard for a window export company shipping from Poland to the US West Coast. Covers 3 years of data across sales pipeline, shipping logistics, and financial health — built on a star schema with 47 DAX measures.
+        </p>
+        <div class="project-highlights">
+          <div class="highlight">
+            <span class="highlight-value">800</span>
+            <span class="highlight-label">Quotes analyzed</span>
+          </div>
+          <div class="highlight">
+            <span class="highlight-value">47</span>
+            <span class="highlight-label">DAX measures</span>
+          </div>
+          <div class="highlight">
+            <span class="highlight-value">3</span>
+            <span class="highlight-label">Dashboard pages</span>
+          </div>
+        </div>
+        <div class="project-tags">
+          <span class="tag">Power BI</span>
+          <span class="tag">DAX</span>
+          <span class="tag">Star Schema</span>
+          <span class="tag">Time Intelligence</span>
+          <span class="tag">Data Modeling</span>
+          <span class="tag">Tabular Editor</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- COMING SOON 2 -->
+    <div class="project-card coming-soon">
+      <div class="coming-soon-body">
+        <span class="coming-soon-icon">⚙️</span>
+        <p style="font-family:'Syne',sans-serif; font-weight:700; margin-bottom:0.5rem;">Project 2 — Coming Soon</p>
+        <p style="font-size:0.85rem;">Technical dashboard · Public dataset · Advanced time intelligence</p>
+      </div>
+    </div>
+
+    <!-- COMING SOON 3 -->
+    <div class="project-card coming-soon">
+      <div class="coming-soon-body">
+        <span class="coming-soon-icon">✨</span>
+        <p style="font-family:'Syne',sans-serif; font-weight:700; margin-bottom:0.5rem;">Project 3 — Coming Soon</p>
+        <p style="font-size:0.85rem;">Interactive showcase · Drillthrough · Bookmarks · Mobile layout</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <section id="skills">
+    <div class="section-header">
+      <span class="section-label">Toolkit</span>
+      <div class="section-line"></div>
+    </div>
+    <h2>Skills</h2>
+    <div class="skills-grid">
+      <div class="skill-group">
+        <p class="skill-group-title">Analytics & BI</p>
+        <div class="skill-list">
+          <span class="tag">Power BI</span>
+          <span class="tag">DAX</span>
+          <span class="tag">Power Query</span>
+          <span class="tag">Data Modeling</span>
+          <span class="tag">Tabular Editor</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <p class="skill-group-title">Data & Databases</p>
+        <div class="skill-list">
+          <span class="tag">SQL</span>
+          <span class="tag">Excel</span>
+          <span class="tag">Star Schema</span>
+          <span class="tag">ETL</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <p class="skill-group-title">Domain Knowledge</p>
+        <div class="skill-list">
+          <span class="tag">International Logistics</span>
+          <span class="tag">Sea Freight</span>
+          <span class="tag">Cost Estimating</span>
+          <span class="tag">Purchasing</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <p class="skill-group-title">Tools & Workflow</p>
+        <div class="skill-list">
+          <span class="tag">Hive</span>
+          <span class="tag">UPS / DHL</span>
+          <span class="tag">English (fluent)</span>
+          <span class="tag">Remote-ready</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="section-header">
+      <span class="section-label">Background</span>
+      <div class="section-line"></div>
+    </div>
+    <h2>About</h2>
+    <div class="about-grid">
+      <div class="about-text">
+        <p>
+          I'm a <strong>Shipping & Operations Manager</strong> with 4+ years of experience in international logistics and cost estimating for the US construction market — now transitioning into a <strong>Data Analyst / Power BI Developer</strong> role.
+        </p>
+        <p>
+          My operational background gives me something most analysts don't have: I understand the business behind the data. I've worked across Estimating, Purchasing, Accounting, and Shipping — which means I know what questions actually matter.
+        </p>
+        <p>
+          I've reduced manual processing time from hours to minutes and delivered <strong>$20–25K in annual cost savings</strong> through workflow automation. Now I'm applying that same mindset to building dashboards that drive decisions.
+        </p>
+      </div>
+      <div class="about-card">
+        <p class="about-card-title">Currently focused on</p>
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <p class="timeline-text"><strong>Power BI portfolio</strong> — 3 dashboards covering different domains and complexity levels</p>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <p class="timeline-text"><strong>SQL practice</strong> — daily exercises on SQLBolt and StrataScatch, focusing on window functions, CTEs, and JOINs</p>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <p class="timeline-text"><strong>PL-300 certification</strong> — Microsoft Power BI Data Analyst via Microsoft Learn</p>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot" style="background: var(--accent2);"></div>
+          <p class="timeline-text"><strong>Open to remote roles</strong> — available from July 2026</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="contact-box">
+      <h2>Let's connect</h2>
+      <p>Open to remote Data Analyst and Power BI Developer roles.</p>
+      <a href="mailto:rpecak7@gmail.com" class="contact-email">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 7 10-7"/></svg>
+        rpecak7@gmail.com
+      </a>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <div class="container">
+    Rafał Pecak · Data Analyst Portfolio · 2026
+  </div>
+</footer>
+
+</body>
+</html>
